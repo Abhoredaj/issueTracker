@@ -1,0 +1,342 @@
+<!-- Section for displaying project name, author, and description -->
+<div class="container mt-4" style="background-color: #68BBE3">
+    <div class="row">
+        <div class="col-lg-12 rounded">
+            <!-- Display project name -->
+            <h2><%= project.name %></h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <!-- Display project author -->
+            <p>Author: <%= project.author %></p>
+        </div>
+        <div class="col-lg-6 text-right">
+            <!-- Button to open the "Add Issue" modal -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addIssueModal" title="Add Issue">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 rounded">
+            <!-- Display project description -->
+            <p style="overflow-wrap: break-word;">Description: <%= project.description %></p>
+        </div>
+    </div>
+</div>
+
+<!-- Section for filter and action buttons -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="btn-group" role="group">
+                <!-- Button to show all issues -->
+                <button type="button" class="btn btn-golden mx-2" id="showAllIssuesButton">Show all issues</button>
+                <!-- Button to open the "Filter by Labels" modal -->
+                <button type="button" class="btn btn-golden mx-2" data-toggle="modal" data-target="#filterLabelModal">Filter by Labels</button>
+                <!-- Button to open the "Filter by Author" modal -->
+                <button type="button" class="btn btn-golden mx-2" data-toggle="modal" data-target="#filterAuthorModal">Filter by Author</button>
+                <!-- Button to open the "Search" modal -->
+                <button type="button" class="btn btn-golden mx-2" data-toggle="modal" data-target="#Search">Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section for displaying issue cards -->
+<div class="container mt-4 mb-5 pb-4">
+    <div class="row mt-4">
+        <!-- Loop through each issue and create an issue card -->
+        <% issues.forEach(issue => { %>
+            <div class="col-lg-3 mb-4">
+                <div class="card">
+                    <div class="card-header custom-card-header text-center">
+                        <!-- Display truncated issue title -->
+                        <% const maxTitleLength = 20; // Set your threshold length %>
+                        <span class="text-ellipsis"><%= issue.title.length > maxTitleLength ? issue.title.substring(0, maxTitleLength) + '...' : issue.title %></span>
+                    </div>
+                    <div class="card-body custom-card-body">
+                        <!-- Display truncated author name and issue creation time -->
+                        <% const maxAuthorLength = 15; // Set your threshold length %>
+                        <% const maxDescriptionLength = 10; // Set your threshold length %>
+                        <p class="card-text">
+                            <span class="text-ellipsis" style="text-align: left;">Author: <%= issue.author.length > maxAuthorLength ? issue.author.substring(0, maxAuthorLength) + '...' : issue.author %></span>
+                        </p>
+                        <p class="card-text">Created <span class="issue-created-time"><%= issue.createdAt %></span></p>
+                    </div>
+                    <div class="card-footer custom-card-footer">
+                        <div class="row">
+                            <div class="col-4">
+                                <!-- Form to delete the issue -->
+                                <form action="/project/issue/delete/<%= project._id %>/<%= issue._id %>" method="post">
+                                    <button type="submit" class="btn btn-link delete-button" data-toggle="tooltip" data-placement="top" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-8 text-right">
+                                <!-- Buttons to edit and view issue details -->
+                                <button type="button" class="btn btn-link text-primary edit-button" data-issue-id="<%= issue._id %>" data-toggle="modal" data-target="#editIssueModal<%= issue._id %>" data-placement="top" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-link text-info info-button" data-toggle="modal" data-target="#issueDetailsModal" data-issue-id="<%= issue._id %>" data-project-id="<%= project._id %>" data-placement="top" title="Info">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal for editing the issue -->
+                <div class="modal fade" id="editIssueModal<%= issue._id %>" tabindex="-1" role="dialog" aria-labelledby="editIssueModalLabel" aria-hidden="true">
+                    <!-- Modal content for editing the issue -->
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="background-color: #f5f5dc">
+                            <div class="modal-header">
+                                <!-- Modal title -->
+                                <h5 class="modal-title" id="editIssueModalLabel">Edit Issue</h5>
+                                <!-- Button to close the modal -->
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form for editing the issue details -->
+                                <form action="/project/issue/update/<%= project._id %>/<%= issue._id %>" method="post">
+                                    <div class="form-group">
+                                        <label for="editTitle">Title</label>
+                                        <input type="text" class="form-control" id="editTitle" name="title" value="<%= issue.title %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editAuthor">Author</label>
+                                        <input type="text" class="form-control" id="editAuthor" name="author" value="<%= issue.author %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editDescription">Description</label>
+                                        <textarea class="form-control" id="editDescription" name="description"><%= issue.description %></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success" title="Submit ..">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>
+
+<!-- Modal for displaying issue details -->
+<div class="modal fade" id="issueDetailsModal" tabindex="-1" role="dialog" aria-labelledby="issueDetailsModalLabel" aria-hidden="true">
+    <!-- Modal content for displaying issue details -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content custom-modal-content" style="background-color: #f5f5dc">
+            <div class="modal-header">
+                <!-- Modal title -->
+                <h5 class="modal-title" id="issueDetailsModalLabel">Issue Details</h5>
+                <!-- Button to close the modal -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Display issue title, author, description, creation time, and labels -->
+                <h4><span id="issueTitle"></span></h4>
+                <p>Author: <span id="issueAuthor"></span></p>
+                <p>Description: <span id="issueDescription"></span></p>
+                <p>Created At: <span id="issueCreatedAt"></span></p>
+                <div class="label-chips"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for adding a new issue -->
+<div class="modal fade" id="addIssueModal" tabindex="-1" role="dialog" aria-labelledby="addIssueModalLabel" aria-hidden="true">
+    <!-- Modal content for adding a new issue -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: lightblue;">
+                <!-- Modal title -->
+                <h5 class="modal-title" id="addIssueModalLabel">Add Issue</h5>
+                <!-- Button to close the modal -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close ..">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: lightblue;">
+                <!-- Form for adding a new issue -->
+                <form action="/project/issue/create/<%= project._id %>" method="POST" onsubmit="return validateForm()">
+                    <div class="form-group">
+                        <label for="issueTitle">Title</label>
+                        <input type="text" class="form-control" id="issueTitle" placeholder="Bug title..." name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="issueDescription">Description</label>
+                        <textarea class="form-control" id="issueDescription" name="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="issueAuthor">Author</label>
+                        <input type="text" class="form-control" id="issueAuthor" placeholder="Author name..." name="author" required>
+                    </div>
+                    <div class="row d-flex justify-content-center mt-100">
+                        <div class="col-md-6">
+                            <!-- Select multiple labels for the issue -->
+                            <select id="choices-multiple-remove-button" placeholder="Select at least one tag" name="labels[]" multiple>
+                                <option value="UI bug">UI bug</option>
+                                <option value="Bug">Bug</option>
+                                <option value="Network issue">Network issue</option>
+                                <option value="Resource">Resource</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success" title="Submit ..">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for filtering issues by labels -->
+<div class="modal fade" id="filterLabelModal" tabindex="-1" role="dialog" aria-labelledby="filterLabelModalLabel" aria-hidden="true">
+    <!-- Modal content for filtering issues by labels -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color: #f5f5dc">
+            <div class="modal-header">
+                <!-- Modal title -->
+                <h5 class="modal-title" id="filterLabelModalLabel">Filter by Labels</h5>
+                <!-- Button to close the modal -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row d-flex justify-content-center mt-100">
+                    <div class="col-md-6">
+                        <!-- Select multiple labels for filtering -->
+                        <select id="choices-multiple-remove-filter-button" placeholder="Select at least one tag" name="labels[]" multiple>
+                            <option value="UI bug">UI bug</option>
+                            <option value="Bug">Bug</option>
+                            <option value="Network issue">Network issue</option>
+                            <option value="Resource">Resource</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Button to close the modal -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- Button to apply label filters -->
+                <button type="button" class="btn btn-primary" id="applyFilterButton" data-project-id="<%= project._id %>">Apply Filter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for filtering issues by author -->
+<div class="modal fade" id="filterAuthorModal" tabindex="-1" role="dialog" aria-labelledby="filterAuthorModalLabel" aria-hidden="true">
+    <!-- Modal content for filtering issues by author -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color: #f5f5dc">
+            <div class="modal-header">
+                <!-- Modal title -->
+                <h5 class="modal-title" id="filterAuthorModalLabel">Filter by Author</h5>
+                <!-- Button to close the modal -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="authorName">Author Name</label>
+                    <input type="text" class="form-control" id="authorName" placeholder="Enter author name">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Button to close the modal -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- Button to apply author filter -->
+                <button type="button" class="btn btn-primary" id="applyAuthorFilterButton" data-project-id="<%= project._id %>">Apply Filter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for searching issues by title and description -->
+<div class="modal fade" id="Search" tabindex="-1" role="dialog" aria-labelledby="SearchLabel" aria-hidden="true">
+    <!-- Modal content for searching issues by title and description -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="background-color: #f5f5dc">
+            <div class="modal-header">
+                <!-- Modal title -->
+                <h5 class="modal-title" id="SearchLabel">Search by Title and Description</h5>
+                <!-- Button to close the modal -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form for searching issues by title and description -->
+                <form id="searchForm">
+                    <div class="form-group">
+                        <label for="searchTitle">Title</label>
+                        <input type="text" class="form-control" id="searchTitle" name="title" placeholder="Search by Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="searchDescription">Description</label>
+                        <input type="text" class="form-control" id="searchDescription" name="description" placeholder="Search by Description">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- Button to close the modal -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- Button to perform the search -->
+                <button type="button" class="btn btn-primary" id="searchButton" data-project-id="<%= project._id %>">Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for displaying filtered issues -->
+<div class="modal fade" id="filteredIssueModal" tabindex="-1" role="dialog" aria-labelledby="filteredIssueModalLabel" aria-hidden="true">
+    <!-- Modal content for displaying filtered issues -->
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background-color: #f5f5dc">
+            <div class="modal-header">
+                <!-- Modal title -->
+                <h5 class="modal-title" id="filteredIssueModalLabel">Filtered Issues</h5>
+                <!-- Button to close the modal -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <!-- Container for displaying filtered issues -->
+                <div id="filteredIssueContainer">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Button to close the modal -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript function for validating the form before adding an issue -->
+<script>
+    function validateForm() {
+        const selectedLabels = document.getElementById('choices-multiple-remove-button').value;
+
+        if (!selectedLabels || selectedLabels.length === 0) {
+            alert('Please select at least one label.');
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+<!-- Include external JavaScript file -->
+<script src="/js/issue.js"></script>

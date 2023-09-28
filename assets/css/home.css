@@ -1,0 +1,49 @@
+.text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%; /* Ensure it doesn't exceed the card width */
+}
+
+.delete-button {
+    font-size: 15px;
+    color: red;
+    transition: color 0.3s;
+}
+
+.delete-button:hover {
+    color: maroon;
+}
+
+.custom-modal-content {
+    max-width: 80%; /* Adjust the max-width as needed */
+}
+
+.custom-modal-content .modal-body {
+    word-wrap: break-word; /* This allows long words to break and wrap to the next line */
+}
+
+::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #EADDCA; /* Color of the thumb (the draggable part) */
+    border-radius: 5px; /* Rounded corners for the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #EADDCA; /* Color when hovering over the thumb */
+}
+
+/* Background color for card header and footer */
+.custom-card-header,
+.custom-card-footer {
+    background-color: #f5deb3;
+}
+
+/* Background color for card body */
+.custom-card-body {
+    background-color: #faf0be;
+}

@@ -1,0 +1,163 @@
+<!-- Section for displaying all projects and adding new projects -->
+<div class="container mt-4">
+    <div class="row rounded">
+        <div class="col-lg-6" style="background-color: #68BBE3">
+            <!-- Heading for all projects -->
+            <h2>All Projects</h2>
+        </div>
+        <div class="col-lg-6 text-right" style="background-color: #68BBE3">
+            <!-- Button to open the "Add Project" modal -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addProjectModal" title="Add Project">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Section for displaying project cards -->
+<div class="container mt-4 mb-5 pb-4">
+    <div class="row mt-4">
+        <!-- Loop through each project and create a project card -->
+        <% projects.forEach(project => { %>
+            <div class="col-lg-3 mb-4">
+                <div class="card">
+                    <div class="card-header custom-card-header text-center">
+                        <!-- Display truncated project name -->
+                        <% const maxNameLength = 20; // Set your threshold length %>
+                        <span class="text-ellipsis"><%= project.name.length > maxNameLength ? project.name.substring(0, maxNameLength) + '...' : project.name %></span>
+                    </div>
+                    <div class="card-body custom-card-body">
+                        <!-- Display truncated author name and project creation time -->
+                        <% const maxAuthorLength = 15; // Set your threshold length %>
+                        <% const maxDescriptionLength = 10; // Set your threshold length %>
+                        <p class="card-text">
+                            <span class="text-ellipsis" style="text-align: left;">Author: <%= project.author.length > maxAuthorLength ? project.author.substring(0, maxAuthorLength) + '...' : project.author %></span>
+                        </p>
+                        <p class="card-text">Created <span class="project-created-time"><%= project.createdAt %></span></p>
+                        <!-- Link to navigate to the issues of the project -->
+                        <a href="/project/issue/<%= project._id %>" class="issue-button">Issues</a>
+                    </div>
+                    <div class="card-footer custom-card-footer">
+                        <div class="row">
+                            <div class="col-4">
+                                <!-- Form to delete the project -->
+                                <form action="/project/delete/<%= project._id %>" method="post">
+                                    <button type="submit" class="btn btn-link delete-button" data-toggle="tooltip" data-placement="top" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="col-8 text-right">
+                                <!-- Buttons to edit and view project details -->
+                                <button type="button" class="btn btn-link text-primary edit-button" data-project-id="<%= project._id %>" data-toggle="modal" data-target="#editProjectModal<%= project._id %>" data-placement="top" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-link text-info info-button" data-toggle="modal" data-target="#projectDetailsModal" data-project-id="<%= project._id %>" data-placement="top" title="Info">
+                                    <i class="fas fa-info-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal for editing project details -->
+                <div class="modal fade" id="editProjectModal<%= project._id %>" tabindex="-1" role="dialog" aria-labelledby="editProjectModalLabel" aria-hidden="true">
+                    <!-- Modal content -->
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content" style="background-color: #f5f5dc">
+                            <div class="modal-header">
+                                <!-- Modal title -->
+                                <h5 class="modal-title" id="editProjectModalLabel">Edit Project</h5>
+                                <!-- Close button -->
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Form for editing project details -->
+                                <form action="/project/update/<%= project._id %>" method="post">
+                                    <div class="form-group">
+                                        <label for="editName">Name</label>
+                                        <input type="text" class="form-control" id="editName" name="name" value="<%= project.name %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editAuthor">Author</label>
+                                        <input type="text" class="form-control" id="editAuthor" name="author" value="<%= project.author %>">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editDescription">Description</label>
+                                        <textarea class="form-control" id="editDescription" name="description"><%= project.description %></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success" title="Submit ..">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>
+
+<!-- Modal for displaying project details -->
+<div class="modal fade" id="projectDetailsModal" tabindex="-1" role="dialog" aria-labelledby="projectDetailsModalLabel" aria-hidden="true">
+    <!-- Modal content -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content custom-modal-content" style="background-color: #f5f5dc">
+            <div class="modal-header">
+                <!-- Modal title -->
+                <h5 class="modal-title" id="projectDetailsModalLabel">Project Details</h5>
+                <!-- Close button -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Display project details -->
+                <h4><span id="projectName"></span></h4>
+                <p>Author: <span id="projectAuthor"></span></p>
+                <p>Description: <span id="projectDescription"></span></p>
+                <p>Created At: <span id="projectCreatedAt"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for adding a new project -->
+<div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+    <!-- Modal content -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: lightblue;">
+                <!-- Modal title -->
+                <h5 class="modal-title" id="addProjectModalLabel">Add Project</h5>
+                <!-- Close button -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" title="Close ..">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: lightblue;">
+                <!-- Form for adding a new project -->
+                <form action="/project/create" method="POST">
+                    <div class="form-group">
+                        <label for="projectName">Name</label>
+                        <input type="text" class="form-control" id="projectName" placeholder="Project name..." name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectDescription">Description</label>
+                        <textarea class="form-control" id="projectDescription" name="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectAuthor">Author</label>
+                        <input type="text" class="form-control" id="projectAuthor" placeholder="Author name..." name="author" required>
+                    </div>
+                    <button type="submit" class="btn btn-success" title="Submit ..">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include JavaScript file for additional functionality -->
+<script src="/js/home.js"></script>
+
+
