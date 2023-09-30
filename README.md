@@ -1,6 +1,6 @@
 # Issue Tracker Web Application
 
-The Issue Tracker Web Application is a web-based tool that helps users manage and keep track of issues or tasks within a project. It allows users to create, view, edit, and filter issues by various criteria such as labels, authors, and search terms. This repository contains the source code for the web application. Hoisted Link :
+The Issue Tracker Web Application is a web-based tool that helps users manage and keep track of issues or tasks within a project. It allows users to create, view, edit, and filter issues by various criteria such as labels, authors, and search terms. This repository contains the source code for the web application. 
 
 ## Table of Contents
 
@@ -37,36 +37,41 @@ The Issue Tracker Web Application is a web-based tool that helps users manage an
     node index.js
     The server will start on port 8000. You can access the web application in your browser at http://localhost:8000.
 
-Usage
-Create a new project or select an existing project.
-Add issues to the project by clicking the "Add Issue" button.
-View, edit, or delete issues by clicking on the issue cards.
-Use the filter options to narrow down the list of displayed issues.
-Search for issues by title and description using the search feature.
-Technologies Used
-Frontend:
+## Usage:
 
-HTML5 and CSS3
-JavaScript (Client-side)
-Bootstrap for styling
-Backend:
+- Create a new project or select an existing project.
+- Add issues to the project by clicking the "Add Issue" button.
+- View, edit, or delete issues by clicking on the issue cards.
+- Use the filter options to narrow down the list of displayed issues.
+- Search for issues by title and description using the search feature.
 
-Node.js
-Express.js
-MongoDB for data storage
-Mongoose for database modeling
-EJS (Embedded JavaScript) for dynamic views
-Contributing
-Contributions are welcome! If you'd like to contribute to the project, please follow these steps:
+## Technologies Used
 
-Fork the repository.
-Create a new branch for your feature or bug fix.
-Make your changes and test them.
-Commit your changes with clear and concise commit messages.
-Push your changes to your fork.
-Submit a pull request to the main repository.
+- **Frontend:**
+  - HTML5 and CSS3
+  - JavaScript (Client-side)
+  - Bootstrap for styling
+
+- **Backend:**
+  - Node.js
+  - Express.js
+  - MongoDB for data storage
+  - Mongoose for database modeling
+  - EJS (Embedded JavaScript) for dynamic views
+
+## Contributing:
+
+- **Contributions are welcome! If you'd like to contribute to the project, please follow these steps:**
+  - Fork the repository.
+  - Create a new branch for your feature or bug fix.
+  - Make your changes and test them.
+  - Commit your changes with clear and concise commit messages.
+  - Push your changes to your fork.
+  - Submit a pull request to the main repository.
 
 # Project Folder Structure
+
+```bash
 │ index.js
 │ package-lock.json
 │ package.json
